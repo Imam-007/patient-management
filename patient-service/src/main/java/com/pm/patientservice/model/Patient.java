@@ -10,7 +10,9 @@ import java.util.UUID;
 @Entity
 public class Patient {
     @Id
-    @Column(columnDefinition = "CHAR(36)")
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(length = 36)
+    @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.VARCHAR)
     private UUID id;
 
     @NotNull
