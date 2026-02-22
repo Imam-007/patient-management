@@ -31,6 +31,14 @@ public class PatientServiceImpl implements PatientService {
                 .map(PatientMapper::toDto).toList();
     }
 
+    public PatientResponseDTO getPatientById(UUID id) {
+        Patient patient = patientRepository.findById(id).orElseThrow(
+                ()->new PatientNotFoundException("Patient not found with Id: " + id)
+        );
+
+        return PatientMapper.toDto(patient);
+    }
+
     @Override
     public PatientResponseDTO createPatient(PatientRequestDTO patientRequestDTO){
         if (patientRepository.existsByEmail(patientRequestDTO.getEmail())) {
@@ -44,7 +52,8 @@ public class PatientServiceImpl implements PatientService {
     @Override
     public PatientResponseDTO updatePatient(UUID id, PatientRequestDTO patientRequestDTO){
         Patient patient = patientRepository.findById(id).orElseThrow(
-                ()->new PatientNotFoundException("Patient not found with Id: " + id));
+                ()->new PatientNotFoundException("Patient not found with Id: " + id)
+        );
 
         if (patientRepository.existsByEmailAndIdNot(patientRequestDTO.getEmail(), id)) {
             throw new EmailAlreadyExistsException("A patient with email already exists " + patientRequestDTO.getEmail());
